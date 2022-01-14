@@ -9,7 +9,6 @@ service ComputerService {
 }
 
 message ComputeRequest { 
-// TODO: refactor to use TaskId
 	string Session = 1;
 	string Subsession = 2;
 	string TaskId = 3;
