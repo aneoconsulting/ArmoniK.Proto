@@ -13,7 +13,7 @@ jobs:
     with:
       name: ${{ github.event.head_commit.committer.name }}
       email: ${{ github.event.head_commit.committer.email }}
-      repos: "[\"github.com/aneoconsulting/ArmoniK.Api.git\", \"github.com/aneoconsulting/ArmoniK.Core.git\"]"
+      repos: "[\"github.com/aneoconsulting/ArmoniK.Api.git\"]"
       message: ${{ github.event.head_commit.message }}
     secrets:
       TOKEN: ${{ secrets.ARMONIK_GH_TOKEN }}
