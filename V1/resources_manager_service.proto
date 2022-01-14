@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "Objects.proto";
+
+option csharp_namespace = "ArmoniK.Core.gRPC.V1";
+package ArmoniK.Core.gRPC.V1;
+
+service ResourceManagerService {
+  rpc UploadResources (Resource) returns (Empty);
+  rpc DownloadResources (ResourceRequest) returns (Resource);
+  rpc ListResources (Empty) returns (ResourceList);
+  rpc DeleteResources (ResourceRequest) returns (Empty);
+}
+
+message Resource {
+  string key = 1;
+  bytes data = 2;
+}
+
+message ResourceRequest {
+  string key = 1;
+}
+
+message ResourceList {
+  repeated string keys = 1;
+}
