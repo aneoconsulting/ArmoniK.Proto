@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+
+import "objects.proto";
+import "task_status.proto";
+
+option csharp_namespace = "ArmoniK.Api.gRPC.V1";
+package ArmoniK.api.grpc.v1;
+
+service Worker {
+  rpc Process (ProcessRequest) returns (ComputeReply);
+}
+
+message ProcessRequest {
+	message ComputeRequest {
+		string session = 1;
+		string task_id = 2;
+		bytes payload = 3;
+		map<string, string> task_options = 5;
+		map<string, bytes> required_data = 6;
+		repeated string output_keys = 7;
+	}
+	message CreateTask {
+		string reply_id = 1;
+		CreateTaskReply reply = 2;
+	}
+	message ResourceReply {
+		string reply_id = 1;
+		string key = 2;
+		oneof has_result {
+			bytes data = 3;
+			string error = 4;
+		}
+	}
+	oneof RequestType {
+		ComputeRequest compute = 1;
+		CreateTask create_task_reply = 2;
+		ResourceReply resource_reply = 3;
+	}
+}
+
+message ComputeReply {
+	bytes Data = 1;
+}
+
+
+message process_reply {
+	message Output{
+		TaskStatus.TaskStatus status = 1;
+		oneof ResultType {
+			bytes output = 2;
+			string error = 3;
+		}
+	}
+	message ResultReply{
+		string request_id = 1;
+		string key = 2;
+		bytes result_chunk = 3;
+		bool result_complete = 4;
+	}
+	message CreateSmallTask {
+		string request_id = 1;
+		CreateSmallTaskRequest request = 2;
+	}
+	message CreateLargeTask {
+		string request_id = 1;
+		CreateLargeTaskRequest request = 2;
+	}
+	message ResourceRequest {
+		string request_id = 1;
+		string key = 2;
+	}
+	oneof Replytype {
+		Output output = 1;
+		ResultReply result = 2;
+		CreateSmallTask create_small_task_request = 3;
+		CreateLargeTask create_large_task_request = 4;
+		ResourceRequest resource_request = 5;
+	}
+}

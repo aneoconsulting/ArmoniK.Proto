@@ -1,100 +1,106 @@
 syntax = "proto3";
 
 import "google/protobuf/duration.proto"; 
-import "google/protobuf/timestamp.proto"; 
 
-import "TaskStatus.proto";
-option csharp_namespace = "ArmoniK.Core.gRPC.V1";
-package ArmoniK.Core.gRPC.V1;
+import "task_status.proto";
+option csharp_namespace = "ArmoniK.Api.gRPC.V1";
+package ArmoniK.api.grpc.v1;
 
-message SessionId {
-	string Session = 1;
-	string SubSession = 2;
-}
-
-message TaskId {
-	string Session = 1;
-	string SubSession = 2;
-	string Task = 3;
-}
-
-message TaskIdList {
-	repeated TaskId TaskIds = 1;
-}
+message Empty {}
 
 message TaskOptions {
 	map<string, string> Options = 1;
 	google.protobuf.Duration MaxDuration = 2;
 	int32 MaxRetries = 3;
 	int32 Priority = 4;
-	string IdTag = 5; // used to generate the taskId
 }
 
-message SessionOptions {
-	TaskOptions DefaultTaskOption = 1;
-	string IdTag = 2; // used to generate the sessionId
-	TaskId ParentTask = 3;
+
+
+message CreateSmallTaskRequest {
+	message TaskRequest {
+		string id = 1;
+		repeated string expected_output_keys = 2;
+		repeated string data_dependencies = 3;
+		bytes payload = 4;
+	}
+	string session_id = 1;
+	string parent_task_id = 2;
+	TaskOptions task_options = 3;
+	repeated TaskRequest task_requests = 4;
+}
+
+message CreateLargeTaskRequest {
+	message InitRequest {
+		string session_id = 1;
+		string parent_task_id = 2;
+		TaskOptions task_options = 3;
+	}
+	message InitTaskRequest {
+		string id = 1;
+		repeated string expected_output_keys = 2;
+		repeated string data_dependencies = 3;
+		bytes payload_chunk = 4;
+		bool payload_complete = 5;
+	}
+	message PayloadRequest {
+		bytes payload_chunk = 1;
+		bool payload_complete =2;
+	}
+	oneof RequestType {
+		InitRequest init_request = 1;
+		InitTaskRequest init_task = 2;
+		PayloadRequest task_payload = 3;
+	}
+}
+
+
+message TaskId {
+	string session = 1;
+	string task = 2;
+}
+
+message TaskIdList {
+	repeated TaskId task_ids = 1;
 }
 
 message StatusCount{
-	TaskStatus.TaskStatus Status =1;
-	int32 Count =2;
+	TaskStatus.TaskStatus status =1;
+	int32 count =2;
 }
 
 message Count {
-	repeated StatusCount Values = 1;
+	repeated StatusCount values = 1;
 }
 
-message Payload {
-	bytes Data = 1;
+message ResultRequest {
+	string session = 1;
+	string key = 2;
 }
 
-message Lease {
-	TaskId Id=1;
-	string LeaseId=2;
-	google.protobuf.Timestamp ExpirationDate = 3;
+message Error {
+	TaskStatus.TaskStatus task_status = 1;
+	string detail = 2;
 }
 
-message TaskData {
-	TaskId Id=1;
-	TaskOptions Options=2;
-	.ArmoniK.Core.gRPC.V1.TaskStatus.TaskStatus Status=3;
-	int32 Retries = 6;
-	//string ErrorDetails=7;
-	bool IsPayloadAvailable = 8;
-	Payload Payload = 9;
-	repeated string Dependencies = 10;
-	// repeated Id TaskCompletionTrigger = 7;// used to declare other kind of Dependencies
+message TaskError {
+	string task_id = 1;
+	repeated Error error = 2;
 }
 
-message TaskFilter{
-	string SessionId = 1;
-	string SubSessionId = 2;
-	repeated string IncludedTaskIds = 3;
-	repeated string ExcludedTaskIds = 4;
-	repeated TaskStatus.TaskStatus IncludedStatuses = 5;
-	repeated TaskStatus.TaskStatus ExcludedStatuses = 6;
-}
 
-message GridLibOptions {
-	string GridLibName = 1;
-	string GridLibVersion = 2;
-}
 
-// will contain some optional fields not defined yet
-message TaskRequest {
-	Payload Payload = 1;
-	repeated string DependenciesTaskIds = 2;
-}
 
-message CreateTaskRequest{
-	SessionId SessionId = 1;
-	TaskOptions TaskOptions = 2; 
-	repeated TaskRequest TaskRequests = 3;
-}
+
 
 message CreateTaskReply{
-	repeated TaskId TaskIds = 1;
+	message TaskIds{
+		repeated string ids = 1;
+	}
+	oneof Data{
+		Empty successfull = 1;
+		TaskIds non_successfull_ids = 2;
+	}
 }
 
 message TaskList {
@@ -105,21 +111,3 @@ message TaskIdWithStatus {
 	TaskId TaskId = 1;
 	TaskStatus.TaskStatus Status = 2;
 }
-
-
-message SinglePayloadReply {
-	TaskId TaskId = 1;
-	Payload Data = 2;
-}
-
-message MultiplePayloadReply {
-	repeated SinglePayloadReply Payloads = 1;
-}
-
-message WaitRequest {
-	TaskFilter Filter=1;
-	bool ThrowOnTaskError=2;
-	bool ThrowOnTaskCancellation=3;
-}
-
-message Empty {}
