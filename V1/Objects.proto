@@ -16,42 +16,25 @@ message TaskOptions {
 }
 
 
-
-message CreateSmallTaskRequest {
-	message TaskRequest {
-		string id = 1;
-		repeated string expected_output_keys = 2;
-		repeated string data_dependencies = 3;
-		bytes payload = 4;
-	}
-	string session_id = 1;
-	string parent_task_id = 2;
-	TaskOptions task_options = 3;
-	repeated TaskRequest task_requests = 4;
+message TaskRequest {
+	string id = 1;
+	repeated string expected_output_keys = 2;
+	repeated string data_dependencies = 3;
+	bytes payload = 4;
 }
 
-message CreateLargeTaskRequest {
-	message InitRequest {
-		string session_id = 1;
-		string parent_task_id = 2;
-		TaskOptions task_options = 3;
-	}
-	message InitTaskRequest {
-		string id = 1;
-		repeated string expected_output_keys = 2;
-		repeated string data_dependencies = 3;
-		bytes payload_chunk = 4;
-		bool payload_complete = 5;
-	}
-	message PayloadRequest {
-		bytes payload_chunk = 1;
-		bool payload_complete =2;
-	}
-	oneof RequestType {
-		InitRequest init_request = 1;
-		InitTaskRequest init_task = 2;
-		PayloadRequest task_payload = 3;
-	}
+message DataChunk {
+	bytes data = 2;
+	bool dataComplete = 3;
+}
+
+
+message InitTaskRequest {
+	string id = 1;
+	bool last_task = 2;
+	repeated string expected_output_keys = 3;
+	repeated string data_dependencies = 4;
+	DataChunk payload_chunk = 5;
 }
 
 

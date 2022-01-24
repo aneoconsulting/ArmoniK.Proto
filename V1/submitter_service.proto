@@ -34,24 +34,35 @@ message SessionId {
 }
 
 message CreateSessionRequest {
-	message RootSession{
-		string id = 1;
-		TaskOptions default_task_option = 3;
-	}
-	message SubSession{
-		string root_id = 1;
-		string parent_task_id = 2;
-	}
-	oneof SessionType{
-		RootSession root = 1;
-		SubSession sub_session = 2;
-	}
+	string id = 1;
+	TaskOptions default_task_option = 3;
 }
 
 message CreateSessionReply {
 	oneof result {
 		Empty Ok = 1;
 		string Error = 2;
+	}
+}
+
+
+message CreateSmallTaskRequest {
+	string session_id = 1;
+	string parent_task_id = 2;
+	TaskOptions task_options = 3;
+	repeated TaskRequest task_requests = 4;
+}
+
+message CreateLargeTaskRequest {
+	message InitRequest {
+		string session_id = 1;
+		string parent_task_id = 2;
+		TaskOptions task_options = 3;
+	}
+	oneof Type {
+		InitRequest init_request = 1;
+		InitTaskRequest init_task = 2;
+		DataChunk task_payload = 3;
 	}
 }
 
