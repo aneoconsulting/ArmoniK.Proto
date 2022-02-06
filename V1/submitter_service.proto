@@ -10,17 +10,18 @@ service Submitter{
 	rpc GetServiceConfiguration (Empty) returns (ConfigurationReply); 
 
 	rpc CreateSession (CreateSessionRequest) returns (CreateSessionReply);
-	rpc CancelSession (SessionId) returns (Empty);
+	rpc CancelSession (Session) returns (Empty);
 
 	rpc CreateSmallTasks (CreateSmallTaskRequest) returns (CreateTaskReply);
 	rpc CreateLargeTasks (stream CreateLargeTaskRequest) returns (CreateTaskReply);
 
-	rpc ListTasks (TaskFilter) returns (TaskIdList);// will also return subtasks
-	rpc CountTasks (TaskFilter) returns (Count); // will also return subtasks
+	rpc ListTasks (TaskFilter) returns (TaskIdList);
+	rpc CountTasks (TaskFilter) returns (Count); 
 	rpc TryGetResult (ResultRequest) returns (stream ResultReply);
+	rpc TryGetTaskOutput (ResultRequest) returns (Output);
 	rpc WaitForAvailability (ResultRequest) returns (AvailabilityReply);
-	rpc WaitForCompletion (WaitRequest) returns (Count); // will also wait subtasks
-	rpc CancelTask (TaskFilter) returns (Empty); // also cancels all subtasks
+	rpc WaitForCompletion (WaitRequest) returns (Count);
+	rpc CancelTasks (TaskFilter) returns (Empty); 
 	rpc GetStatus (GetStatusrequest) returns (GetStatusReply);
 }
 
@@ -28,9 +29,8 @@ message ConfigurationReply{
 	int32 data_chunk_max_size = 1;
 }
 
-message SessionId {
-	string session = 1;
-	string parent_task_id = 2;
+message Session {
+	string Id = 1;
 }
 
 message CreateSessionRequest {
@@ -48,16 +48,14 @@ message CreateSessionReply {
 
 message CreateSmallTaskRequest {
 	string session_id = 1;
-	string parent_task_id = 2;
-	TaskOptions task_options = 3;
-	repeated TaskRequest task_requests = 4;
+	TaskOptions task_options = 2;
+	repeated TaskRequest task_requests = 3;
 }
 
 message CreateLargeTaskRequest {
 	message InitRequest {
 		string session_id = 1;
-		string parent_task_id = 2;
-		TaskOptions task_options = 3;
+		TaskOptions task_options = 2;
 	}
 	oneof Type {
 		InitRequest init_request = 1;
@@ -67,23 +65,20 @@ message CreateLargeTaskRequest {
 }
 
 message TaskFilter {
-	message KnownIdsRequest {
-		repeated string task_ids = 1;
-	}
-	message UnknownIdsRequest {
-		string session_id = 1;
-		repeated string excluded_task_ids = 3;
+	message IdsRequest {
+		repeated string ids = 1;
 	}
 	message StatusesRequest {
-		repeated TaskStatus.TaskStatus IncludedStatuses = 1;
+		repeated TaskStatus.TaskStatus Statuses = 1;
 	}
 	oneof Ids {
-		KnownIdsRequest known = 1;
-		UnknownIdsRequest unknown = 2;
+		IdsRequest session = 1;
+		IdsRequest dispatch = 2;
+		IdsRequest task = 3;
 	}
 	oneof Statuses {
-		StatusesRequest included = 3;
-		StatusesRequest excluded = 4;
+		StatusesRequest included = 4;
+		StatusesRequest excluded = 5;
 	}
 }
 
