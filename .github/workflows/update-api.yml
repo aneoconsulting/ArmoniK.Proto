@@ -1,0 +1,20 @@
+name: Update ArmoniK.Api
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.proto'
+
+jobs:
+  build:
+    uses: aneoconsulting/ArmoniK.Proto/.github/workflows/update-workflow.yml@main
+    with:
+      name: ${{ github.event.head_commit.committer.name }}
+      email: ${{ github.event.head_commit.committer.email }}
+      repos: "[\"github.com/aneoconsulting/ArmoniK.Api.git\"]"
+      message: ${{ github.event.head_commit.message }}
+    secrets:
+      TOKEN: ${{ secrets.ARMONIK_GH_TOKEN }}
+

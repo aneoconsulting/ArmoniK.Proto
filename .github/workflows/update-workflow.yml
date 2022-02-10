@@ -1,0 +1,50 @@
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+      email:
+        required: true
+        type: string
+      message:
+        required: true
+        type: string
+      repos:
+        required: true
+        type: string
+    secrets:
+      TOKEN:
+        required: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        run: ${{ fromJSON(inputs.repos) }}
+    steps:
+      - name: Configure Git
+        run: |
+          git config --global user.name "${{ inputs.name }}"
+          git config --global user.email "${{ inputs.email }}"
+  
+      - name: Clone
+        run: |
+          git clone https://${{ secrets.TOKEN }}@${{ matrix.run }} --recursive ClonedRepo
+
+      - name: Update
+        run: |
+          cd ClonedRepo
+          git submodule update --remote
+
+      - name: Modify
+        run: |
+          cd ClonedRepo
+          git commit -a -m "${{ inputs.message }}"
+          git show
+
+      - name: Push
+        run: |
+          cd ClonedRepo
+          git push origin $(git rev-parse --abbrev-ref HEAD)
