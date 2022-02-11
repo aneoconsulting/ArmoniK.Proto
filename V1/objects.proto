@@ -15,6 +15,11 @@ message TaskOptions {
 	int32 Priority = 4;
 }
 
+
+message ConfigurationReply {
+	int32 data_chunk_max_size = 1;
+}
+
 message Output {
 	message Error {
 		string details = 1;

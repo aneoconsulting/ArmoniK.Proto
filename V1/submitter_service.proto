@@ -25,9 +25,6 @@ service Submitter{
 	rpc GetStatus (GetStatusrequest) returns (GetStatusReply);
 }
 
-message ConfigurationReply{
-	int32 data_chunk_max_size = 1;
-}
 
 message Session {
 	string Id = 1;
