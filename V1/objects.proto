@@ -16,7 +16,7 @@ message TaskOptions {
 }
 
 
-message ConfigurationReply {
+message Configuration {
 	int32 data_chunk_max_size = 1;
 }
 
@@ -39,18 +39,32 @@ message TaskRequest {
 	bytes payload = 4;
 }
 
-message DataChunk {
-	bytes data = 2;
-	bool dataComplete = 3;
+
+message InitKeyedDataStream {
+	oneof Type {
+		string key = 1;
+		bool last_result = 2;
+	}
 }
 
+message DataChunk {
+	oneof Type {
+		bytes data = 1;
+		bool dataComplete = 2;
+	}
+}
 
-message InitTaskRequest {
+message TaskRequestHeader {
 	string id = 1;
-	bool last_task = 2;
 	repeated string expected_output_keys = 3;
 	repeated string data_dependencies = 4;
-	DataChunk payload_chunk = 5;
+}
+
+message InitTaskRequest {
+	oneof Type{
+		TaskRequestHeader header = 1;
+		bool last_task = 2;
+	}
 }
 
 

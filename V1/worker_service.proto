@@ -16,15 +16,18 @@ service Worker {
 message ProcessRequest {
 	message ComputeRequest {
 		message InitRequest {
-			ConfigurationReply configuration = 1;
+			Configuration configuration = 1;
 			string session_id = 2;
 			string task_id = 3;
 			map<string, string> task_options = 4;
-			DataChunk payload = 5;
+			repeated string expected_output_keys = 5; 
+			DataChunk payload = 6;
 		}
 		message InitData {
-			string key = 1;
-			DataChunk data_chunk = 2;
+			oneof Type{
+				string key = 1;
+				bool last_data = 2;
+			}
 		}
 		oneof Type {
 			InitRequest init_request = 1;
@@ -62,14 +65,9 @@ message ProcessRequest {
 
 
 message ProcessReply {
-
 	message Result{
-		message Init{
-			string key = 1;
-			DataChunk result_chunk = 2;
-		}
 		oneof Type {
-			Init init = 1;
+			InitKeyedDataStream init = 1;
 			DataChunk data = 2;
 		}
 	}

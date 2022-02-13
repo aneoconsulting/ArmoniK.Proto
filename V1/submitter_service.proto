@@ -7,7 +7,7 @@ option csharp_namespace = "ArmoniK.Api.gRPC.V1";
 package ArmoniK.api.grpc.v1;
 
 service Submitter{
-	rpc GetServiceConfiguration (Empty) returns (ConfigurationReply); 
+	rpc GetServiceConfiguration (Empty) returns (Configuration); 
 
 	rpc CreateSession (CreateSessionRequest) returns (CreateSessionReply);
 	rpc CancelSession (Session) returns (Empty);
@@ -17,7 +17,7 @@ service Submitter{
 
 	rpc ListTasks (TaskFilter) returns (TaskIdList);
 	rpc CountTasks (TaskFilter) returns (Count); 
-	rpc TryGetResult (ResultRequest) returns (stream ResultReply);
+	rpc TryGetResultStream (ResultRequest) returns (stream ResultReply);
 	rpc TryGetTaskOutput (ResultRequest) returns (Output);
 	rpc WaitForAvailability (ResultRequest) returns (AvailabilityReply);
 	rpc WaitForCompletion (WaitRequest) returns (Count);
@@ -88,15 +88,15 @@ message GetStatusReply {
 }
 
 message ResultReply {
-	oneof has_result {
-		bytes result = 1;
+	oneof Type {
+		DataChunk result = 1;
 		TaskError error = 2;
 		string not_completed_task = 3;
 	}
 }
 
 message AvailabilityReply {
-	oneof has_result {
+	oneof Type {
 		Empty ok = 1;
 		TaskError error = 2;
 		string not_completed_task = 3;
