@@ -74,7 +74,7 @@ message TaskId {
 }
 
 message TaskIdList {
-	repeated TaskId task_ids = 1;
+	repeated string task_ids = 1;
 }
 
 message StatusCount{
