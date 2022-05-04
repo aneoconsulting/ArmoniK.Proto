@@ -15,20 +15,135 @@ service Submitter{
 	rpc CreateSmallTasks (CreateSmallTaskRequest) returns (CreateTaskReply);
 	rpc CreateLargeTasks (stream CreateLargeTaskRequest) returns (CreateTaskReply);
 
-	rpc ListTasks (TaskFilter) returns (TaskIdList);
-	rpc CountTasks (TaskFilter) returns (Count); 
+	// rpc ListTasks (TaskFilter) returns (TaskIdList);
+	// rpc CountTasks (TaskFilter) returns (Count); 
 	rpc TryGetResultStream (ResultRequest) returns (stream ResultReply);
 	rpc TryGetTaskOutput (ResultRequest) returns (Output);
 	rpc WaitForAvailability (ResultRequest) returns (AvailabilityReply);
 	rpc WaitForCompletion (WaitRequest) returns (Count);
 	rpc CancelTasks (TaskFilter) returns (Empty); 
 	rpc GetStatus (GetStatusrequest) returns (GetStatusReply);
-}
+
+	// Applications
+	rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse);
+	rpc GetApplications(GetApplicationsRequest) returns (GetApplicationsResponse);
 
 
-message Session {
-	string Id = 1;
+	// Sessions
+	rpc GetSession(GetSessionRequest) returns (GetSessionResponse);
+	rpc GetSessions(GetSessionsRequest) returns (GetSessionsResponse);
+	rpc CloseSession(CloseSessionRequest) returns (CloseSessionResponse);
+	rpc ReOpenSession(ReOpenSessionRequest) returns (ReOpenSessionResponse);
+	rpc CountSessions(CountSessionsRequest) returns (CountSessionsResponse);
+
+	// Tasks
+	rpc GetTask(GetTaskRequest) returns (GetTaskResponse);
+	rpc GetTasks(GetTasksRequest) returns (GetTasksResponse);
+	rpc CountTasks(CountTasksRequest) returns (CountTasksResponse);
 }
+
+/*
+*	Application messages
+*/
+message GetApplicationRequest {
+	Application.id id = 1;
+}
+
+message GetApplicationResponse {
+	Application data = 1;
+}
+
+message GetApplicationsRequest {
+	Pagination pagination = 1;
+	optional Filter filter = 2;
+}
+
+message GetApplicationsResponse {
+	PaginationMeta pagination = 1;
+	ApplicationsList data = 2;
+}
+
+/*
+*	Session messages
+*/
+message GetSessionRequest {
+	Session.id id = 1;
+}
+
+message GetSessionResponse {
+	Session data = 1;
+}
+
+message GetSessionsRequest {
+	Pagination pagination = 1;
+	optional Filter filter = 2;
+}
+
+message GetSessionsResponse {
+	PaginationMeta pagination = 1;
+	SessionsList data = 2;
+}
+
+message CloseSessionRequest {
+	Session.id id = 1;
+}
+
+message CloseSessionResponse {
+	// TODO: Create a status message or return full session ?
+	Session data = 1;
+}
+
+message ReOpenSessionRequest {
+	Session.id id = 1;
+}
+
+message ReOpenSessionResponse {
+	// TODO: Create a status message or return full session ?
+	Session data = 1;
+}
+
+message CountSessionsRequest {
+	SessionFilter filter = 1;
+}
+
+message CountSessionsResponse {
+	fixed64 count = 1;
+}
+
+/*
+*	Tasls messages
+*/
+message GetTaskRequest {
+	Task.id id = 1;
+}
+
+message GetTaskResponse {
+	Task data = 1;
+}
+
+message GetTasksRequest {
+	Pagination pagination = 1;
+	optional Filter filter = 2;
+}
+
+message GetTasksResponse {
+	PaginationMeta pagination = 1;
+	TasksList data = 2;
+}
+
+message CountTasksRequest {
+	TaskFilter filter = 1;
+}
+
+message CountTasksResponse {
+	fixed64 count = 1;
+}
+
+// -------------------------
+
+// message Session {
+// 	string Id = 1;
+// }
 
 message CreateSessionRequest {
 	string id = 1;
@@ -61,23 +176,23 @@ message CreateLargeTaskRequest {
 	}
 }
 
-message TaskFilter {
-	message IdsRequest {
-		repeated string ids = 1;
-	}
-	message StatusesRequest {
-		repeated TaskStatus.TaskStatus Statuses = 1;
-	}
-	oneof Ids {
-		IdsRequest session = 1;
-		IdsRequest dispatch = 2;
-		IdsRequest task = 3;
-	}
-	oneof Statuses {
-		StatusesRequest included = 4;
-		StatusesRequest excluded = 5;
-	}
-}
+// message TaskFilter {
+// 	message IdsRequest {
+// 		repeated string ids = 1;
+// 	}
+// 	message StatusesRequest {
+// 		repeated TaskStatus.TaskStatus Statuses = 1;
+// 	}
+// 	oneof Ids {
+// 		IdsRequest session = 1;
+// 		IdsRequest dispatch = 2;
+// 		IdsRequest task = 3;
+// 	}
+// 	oneof Statuses {
+// 		StatusesRequest included = 4;
+// 		StatusesRequest excluded = 5;
+// 	}
+// }
 
 message GetStatusrequest{
 	string task_id = 1;
