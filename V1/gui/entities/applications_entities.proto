@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "ArmoniK.Api.gRPC.V1";
+package armonik.api.grpc.v1;
+
+message Application {
+	string id = 1;
+	string name = 2;
+	string description = 3;
+	string version = 4;
+	string hash = 5;
+
+	string created_at = 6;
+	string updated_at = 7;
+}
+
+message ApplicationsList {
+	repeated Application items = 1;
+}

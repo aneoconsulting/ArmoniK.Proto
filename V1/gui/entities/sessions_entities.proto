@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+import "../enums/sessions_status.proto";
+
+option csharp_namespace = "ArmoniK.Api.gRPC.V1";
+package armonik.api.grpc.v1;
+
+message Session {
+	string id = 1;
+	int32 user_id = 2;
+	Application application = 3;
+	string closed_at = 4;
+	string created_at = 5;
+	string updated_at = 6;
+}
+
+message SessionsList {
+	repeated Session items = 1;
+}
+
+message SessionFilter {
+	optional SessionStatus status = 1;
+	optional Application.id application_id = 2;
+	optional int32 user_id = 3;
+}

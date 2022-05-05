@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+import "../../common/filters.proto";
+import "../../common/pagination.proto";
+import "../entities/sessions_entities.proto";
+
+option csharp_namespace = "ArmoniK.Api.gRPC.V1";
+package armonik.api.grpc.v1;
+
+message GetSessionRequest {
+	Session.id id = 1;
+}
+
+message GetSessionResponse {
+	Session data = 1;
+}
+
+message GetSessionsRequest {
+	Pagination pagination = 1;
+	optional Filter filter = 2;
+}
+
+message GetSessionsResponse {
+	PaginationMeta pagination = 1;
+	SessionsList data = 2;
+}
+
+message CloseSessionRequest {
+	Session.id id = 1;
+}
+
+message CloseSessionResponse {
+	// TODO: Create a status message or return full session ?
+	Session data = 1;
+}
+
+message ReOpenSessionRequest {
+	Session.id id = 1;
+}
+
+message ReOpenSessionResponse {
+	// TODO: Create a status message or return full session ?
+	Session data = 1;
+}
+
+message CountSessionsRequest {
+	SessionFilter filter = 1;
+}
+
+message CountSessionsResponse {
+	fixed64 count = 1;
+}

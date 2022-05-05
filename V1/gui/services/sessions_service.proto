@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "../messages/sessions_messages.proto";
+
+option csharp_namespace = "ArmoniK.Api.gRPC.V1";
+package armonik.api.grpc.v1;
+
+service GuiSessions {
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse);
+
+	rpc GetSessions(GetSessionsRequest) returns (GetSessionsResponse);
+
+	rpc CloseSession(CloseSessionRequest) returns (CloseSessionResponse);
+
+	rpc ReOpenSession(ReOpenSessionRequest) returns (ReOpenSessionResponse);
+
+	rpc CountSessions(CountSessionsRequest) returns (CountSessionsResponse);
+}

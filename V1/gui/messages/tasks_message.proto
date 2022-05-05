@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+import "../../common/filters.proto";
+import "../../common/pagination.proto";
+import "../entities/tasks_entities.proto";
+
+option csharp_namespace = "ArmoniK.Api.gRPC.V1";
+package armonik.api.grpc.v1;
+
+message GetTaskRequest {
+	Task.id id = 1;
+}
+
+message GetTaskResponse {
+	Task data = 1;
+}
+
+message GetTasksRequest {
+	Pagination pagination = 1;
+	optional Filter filter = 2;
+}
+
+message GetTasksResponse {
+	PaginationMeta pagination = 1;
+	TasksList data = 2;
+}
+
+message CountTasksRequest {
+	TaskFilter filter = 1;
+}
+
+message CountTasksResponse {
+	fixed64 count = 1;
+}

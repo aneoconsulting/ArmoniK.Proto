@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "../messages/tasks_messages.proto";
+
+option csharp_namespace = "ArmoniK.Api.gRPC.V1";
+package armonik.api.grpc.v1;
+
+service GuiTasks {
+	rpc GetTask(GetTaskRequest) returns (GetTaskResponse);
+
+	rpc GetTasks(GetTasksRequest) returns (GetTasksResponse);
+  
+	rpc CountTasks(CountTasksRequest) returns (CountTasksResponse);
+}
