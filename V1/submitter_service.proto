@@ -25,6 +25,7 @@ service Submitter{
 	rpc GetStatus (GetStatusrequest) returns (GetStatusReply);
 }
 
+
 message Session {
 	string Id = 1;
 }
