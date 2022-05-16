@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "objects.proto";
 import "task_status.proto";
+import "session_status.proto";
 
 option csharp_namespace = "ArmoniK.Api.gRPC.V1";
 package ArmoniK.api.grpc.v1;
@@ -16,7 +17,9 @@ service Submitter{
 	rpc CreateLargeTasks (stream CreateLargeTaskRequest) returns (CreateTaskReply);
 
 	rpc ListTasks (TaskFilter) returns (TaskIdList);
-	rpc CountTasks (TaskFilter) returns (Count); 
+	rpc ListSessions (SessionFilter) returns (SessionIdList);
+
+    rpc CountTasks (TaskFilter) returns (Count); 
 	rpc TryGetResultStream (ResultRequest) returns (stream ResultReply);
 	rpc TryGetTaskOutput (ResultRequest) returns (Output);
 	rpc WaitForAvailability (ResultRequest) returns (AvailabilityReply);
@@ -28,6 +31,14 @@ service Submitter{
 
 message Session {
 	string Id = 1;
+}
+
+message SessionList {
+  repeated Session sessionIds = 1;
+}
+
+message SessionIdList {
+  repeated string sessionIds = 1;
 }
 
 message CreateSessionRequest {
@@ -70,13 +81,25 @@ message TaskFilter {
 	}
 	oneof Ids {
 		IdsRequest session = 1;
-		IdsRequest dispatch = 2;
 		IdsRequest task = 3;
 	}
 	oneof Statuses {
 		StatusesRequest included = 4;
 		StatusesRequest excluded = 5;
 	}
+}
+
+message SessionFilter {
+  repeated string sessions = 1;
+  
+  message StatusesRequest {
+    repeated SessionStatus.SessionStatus Statuses = 1;
+  }
+  
+  oneof Statuses {
+    StatusesRequest included = 4;
+    StatusesRequest excluded = 5;
+  }
 }
 
 message GetStatusrequest{
