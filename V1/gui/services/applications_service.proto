@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+import "../messages/applications_messages.proto";
+
+option csharp_namespace = "ArmoniK.Api.gRPC.V1";
+package armonik.api.grpc.v1;
+
+service GuiApplications {
+	rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse);
+  
+	rpc GetApplications(GetApplicationsRequest) returns (GetApplicationsResponse);
+}

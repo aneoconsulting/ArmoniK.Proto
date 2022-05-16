@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "../../common/filters.proto";
+import "../../common/pagination.proto";
+import "../entities/applications_entities.proto";
+
+option csharp_namespace = "ArmoniK.Api.gRPC.V1";
+package armonik.api.grpc.v1;
+
+message GetApplicationRequest {
+	Application.id id = 1;
+}
+
+message GetApplicationResponse {
+	Application data = 1;
+}
+
+message GetApplicationsRequest {
+	Pagination pagination = 1;
+	optional Filter filter = 2;
+}
+
+message GetApplicationsResponse {
+	PaginationMeta pagination = 1;
+	ApplicationsList data = 2;
+}

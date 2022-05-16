@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "../enums/sessions_status.proto";
+
+option csharp_namespace = "ArmoniK.Api.gRPC.V1";
+package armonik.api.grpc.v1;
+
+message Task {
+	string id = 1;
+	Session.id session_id = 2;
+	TaskStatus.TaskStatus status = 3;
+	string created_at = 4;
+	string updated_at = 5;
+}
+
+message TasksList {
+	repeated Task items = 1;
+}
+
+message TasksFilter {
+	optional Session.id session_id = 2;
+
+	oneof Statuses {
+		StatusesRequest included = 4;
+		StatusesRequest excluded = 5;
+	}
+
+	message StatusesRequest {
+		repeated TaskStatus Statuses = 1;
+	}
+}
