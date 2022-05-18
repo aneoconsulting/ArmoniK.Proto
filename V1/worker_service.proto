@@ -8,6 +8,7 @@ package ArmoniK.api.grpc.v1;
 
 service Worker {
   rpc Process (stream ProcessRequest) returns (stream ProcessReply);
+  rpc HealthCheck (Empty) returns (Empty);
 }
 
 
